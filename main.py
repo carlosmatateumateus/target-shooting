@@ -17,6 +17,10 @@ my_font_alert = pygame.font.SysFont('Fira Code', 40)
 pygame.mouse.set_visible(False)
 
 pato = pygame.transform.scale(pygame.image.load('assets/pato.png'), [100, 100])
+sniper = pygame.transform.scale(pygame.image.load('assets/sniper.png'), [70, 70])
+
+hit = pygame.mixer.Sound('assets/hit.wav')
+
 seconds_on_game = 0
 
 
@@ -30,7 +34,7 @@ def game():
     third_enemie_x = randint(500, 1024)
 
     score = 0
-    wrongs = 0
+    failure = 0
 
     mouse_color = [99, 83, 53]
 
@@ -54,8 +58,8 @@ def game():
         label_ponts = my_font.render('Ponts', True, 'black')
         ponts = my_font.render(f'{score}', True, 'white')
 
-        label_wrong = my_font.render('Wrongs', True, 'black')
-        wrong = my_font.render(f'{wrongs}', True, 'white')
+        label_flaws = my_font.render('Failure', True, 'black')
+        flaws = my_font.render(f'{failure}', True, 'white')
 
         window.fill(window_color)
 
@@ -68,14 +72,17 @@ def game():
                 if mouse_move.colliderect(first_enemie):
                     first_enemie_x = 1024
                     score += 1
+                    hit.play()
 
                 if mouse_move.colliderect(second_enemie):
                     second_enemie_x = 1024
                     score += 1
+                    hit.play()
 
                 if mouse_move.colliderect(third_enemie):
                     third_enemie_x = 1024
                     score += 1
+                    hit.play()
 
         if (winner == False) and (lose == False):
             pygame.draw.rect(window, '#000000', [0, 341/2, 1024, 5])
@@ -85,8 +92,8 @@ def game():
             pygame.draw.rect(window, [200, 200, 200], [20, 15, 120, 40], border_radius=4)
             pygame.draw.rect(window, [57, 167, 63], [80, 20, 50, 30], border_radius=4)
 
-            pygame.draw.rect(window, [200, 200, 200], [180, 15, 120, 40], border_radius=4)
-            pygame.draw.rect(window, [223, 56, 26], [240, 20, 50, 30], border_radius=4)
+            pygame.draw.rect(window, [200, 200, 200], [180, 15, 150, 40], border_radius=4)
+            pygame.draw.rect(window, [223, 56, 26], [270, 20, 50, 30], border_radius=4)
 
 
             first_enemie = pygame.Rect(first_enemie_x, 341/2- 100, 100, 100)
@@ -101,27 +108,27 @@ def game():
 
             if first_enemie_x < -100:
                 first_enemie_x = 1024
-                wrongs += 1
+                failure += 1
                 
             if second_enemie_x < -100:
                 second_enemie_x = 1024
-                wrongs += 1
+                failure += 1
 
             if third_enemie_x < -100:
                 third_enemie_x = 1024
-                wrongs += 1
+                failure += 1
             
             window.blit(label_ponts, [25, 25])
             window.blit(ponts, [100, 25])
 
-            window.blit(label_wrong, [185, 25])
-            window.blit(wrong, [260, 25])
+            window.blit(label_flaws, [185, 25])
+            window.blit(flaws, [290, 25])
 
             window.blit(pato, [first_enemie.x, first_enemie.y])
             window.blit(pato, [second_enemie.x, second_enemie.y])
             window.blit(pato, [third_enemie.x, third_enemie.y])
 
-            mouse_move = pygame.draw.rect(window, mouse_color, [pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1], 19, 19], border_radius=50)
+            mouse_move = pygame.Rect(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1], 19, 19)
             
         if score == 150:
             winner = True
@@ -130,29 +137,25 @@ def game():
             window.blit(press_caution, [400, 320])
             if pygame.key.get_pressed()[K_SPACE]:
                 winner = False
-                wrongs = 0
+                failure = 0
                 score = 0
-                velocity = 0
+                velocity = 2.7
                 seconds_on_game = 0
                 window_color = 'white'
-        if wrongs == 150:
+        if failure == 150:
             lose = True
             window_color = [223, 56, 26]
             window.blit(loser_label, [355, 250])
             window.blit(press_caution, [400, 320])
             if pygame.key.get_pressed()[K_SPACE]:
                 lose = False
-                wrongs = 0
+                failure = 0
                 score = 0
-                velocity = 0
+                velocity = 2.7
                 seconds_on_game = 0
                 window_color = 'white'
 
+        window.blit(sniper, [pygame.mouse.get_pos()[0] - 70/2, pygame.mouse.get_pos()[1] - 70/2])
         pygame.display.flip()
 
 game()
-
-if display == 'win':
-    win()
-else:
-    lose()
