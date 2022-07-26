@@ -20,9 +20,9 @@ pato = pygame.transform.scale(pygame.image.load('assets/pato.png'), [100, 100])
 sniper = pygame.transform.scale(pygame.image.load('assets/sniper.png'), [70, 70])
 
 hit = pygame.mixer.Sound('assets/hit.wav')
+rolex = pygame.time.Clock()
 
 seconds_on_game = 0
-
 
 def game():
 
@@ -42,17 +42,17 @@ def game():
     global window_color
     global seconds_on_game 
 
-    velocity = 2.7
+    velocity = 1.2
 
-    winner_label = my_font_alert.render('You are winner!', True, 'white')
-    loser_label = my_font_alert.render('You are loser!', True, 'white')
-
+    classificação = 'a'
     press_caution = my_font.render('Prima espaço para continuar ...', True, [255, 255, 255])
     while True:
+        winner_label = my_font_alert.render(f'You are winner!({classificação.capitalize()})', True, 'white')
+        loser_label = my_font_alert.render('You are loser!', True, 'white')
         seconds_on_game += 1
 
-        if seconds_on_game > 2500:
-            velocity += 0.2
+        if seconds_on_game > 300:
+            velocity += 0.3
             seconds_on_game = 0
         
         label_ponts = my_font.render('Ponts', True, 'black')
@@ -130,19 +130,37 @@ def game():
 
             mouse_move = pygame.Rect(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1], 19, 19)
             
-        if score == 150:
+        if score == 80:
             winner = True
             window_color = [57, 167, 63]
             window.blit(winner_label, [355, 250])
             window.blit(press_caution, [400, 320])
+            if failure == 0:
+                classificação = 'Master'
+            elif failure <= 5:
+                classificação = "Pro"
+            elif failure <= 10:
+                classificação = "Senior"
+            elif failure <= 20:
+                classificação  = "Pleno"
+            elif failure <= 30:
+                classificação  = "Junior"
+            elif failure <= 40:
+                classificação  = "Newbie"
+            elif failure <= 50:
+                classificação  = "Newbie -"
+            elif failure <= 60:
+                classificação  = "Newbie --"
+            else:
+                classificação = "Normal person"
             if pygame.key.get_pressed()[K_SPACE]:
                 winner = False
                 failure = 0
                 score = 0
-                velocity = 2.7
+                velocity = 1.2
                 seconds_on_game = 0
                 window_color = 'white'
-        if failure == 150:
+        if failure == 80:
             lose = True
             window_color = [223, 56, 26]
             window.blit(loser_label, [355, 250])
@@ -151,11 +169,12 @@ def game():
                 lose = False
                 failure = 0
                 score = 0
-                velocity = 2.7
+                velocity = 1.2
                 seconds_on_game = 0
                 window_color = 'white'
 
         window.blit(sniper, [pygame.mouse.get_pos()[0] - 70/2, pygame.mouse.get_pos()[1] - 70/2])
         pygame.display.flip()
+        rolex.tick(120)
 
 game()
