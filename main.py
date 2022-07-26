@@ -9,7 +9,7 @@ window = pygame.display.set_mode(WINDOW_SIZE)
 window_color = [255, 255, 255]
 
 pygame.init()
-pygame.display.set_caption('Tiro ão alvo!')
+pygame.display.set_caption('target-shooting')
 
 my_font = pygame.font.SysFont('Fira Code', 14)
 my_font_alert = pygame.font.SysFont('Fira Code', 40)
